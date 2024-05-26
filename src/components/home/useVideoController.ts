@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { BGVideoDataType, UpdateCachedType } from "../../store/workSpaceVideoStore";
+import { BGVideoDataType } from "../../store/workSpaceVideoStore";
 
-export const useVideoController = (videoData: BGVideoDataType, updateVideoCached: UpdateCachedType) => {
+export const useVideoController = (videoData: BGVideoDataType) => {
     const isMounted = useRef(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const handleUserInteraction = useRef<() => void>(null!);
@@ -32,8 +32,6 @@ export const useVideoController = (videoData: BGVideoDataType, updateVideoCached
     }, [videoData])
 
     const handleVideoLoaded = () => {
-        console.log("Video loaded")
-        // updateVideoCached(videoData._id, videoData.src);
         if (isMounted.current) return;
         document.addEventListener("click", handleUserInteraction.current);
         isMounted.current = true;

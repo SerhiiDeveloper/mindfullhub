@@ -1,4 +1,4 @@
-import { ChangeEvent, ChangeEventHandler, FormEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import DeleteSVG from "../../assets/svg/delete.svg";
 import UploadSVG from "../../assets/svg/download.svg";
 import SaveSVG from "../../assets/svg/downloaded.svg";
@@ -41,7 +41,6 @@ export const LocalVideoListController = () => {
   }
   const handleSelectFile = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log(file)
     if (file) setFile(file);
   }
   return (

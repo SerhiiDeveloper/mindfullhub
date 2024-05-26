@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { Button } from "./components/button";
+import { useEffect } from "react";
 import { HomePage } from "./pages/home";
 import PWABadge from "./PWABadge";
 import OfflineSVG from "./assets/svg/offline.svg";
@@ -8,14 +7,11 @@ import { useWorkSpaceStore } from "./store/workSpaceStore";
 function App() {
   const setIsOffline = useWorkSpaceStore((state) => state.setIsOffline);
   const isOffline = useWorkSpaceStore((state) => state.isOffline);
-  const [cached, setcached] = useState(false);
 
   const listenerOnline = () => {
-    console.log("online")
     setIsOffline(false);
   };
   const listenerOffline = () => {
-    console.log("offline")
     setIsOffline(true);
   };
 
@@ -29,18 +25,6 @@ function App() {
     };
   }, []);
 
-  const cacheData = () => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.controller?.postMessage({
-        action: "cacheData",
-      });
-      navigator.serviceWorker.addEventListener("message", (event) => {
-        console.log(event.data);
-        setcached(true);
-      });
-    }
-  };
-
   return (
     <>
       {isOffline && (
@@ -50,11 +34,6 @@ function App() {
       )}
       <PWABadge />
       <HomePage />
-      {/* <div className="absolute top-1/2 left-1/2 z-50">
-        <Button onClick={cacheData} className={cached ? "text-red-500" : ""}>
-          Push Cache
-        </Button>
-      </div> */}
     </>
   );
 }

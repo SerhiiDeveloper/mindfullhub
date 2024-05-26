@@ -16,11 +16,8 @@ export const callFetchAndCache: CallFetchAndCacheType = async (url) => {
     let listResponse = await fetch(request)
         .then(async (response) => {
             const isCacheble = cacheable.isResponseCacheable(response)
-            console.log("isCacheable: ", isCacheble)
-            console.log("Response: ", response)
             if (isCacheble) {
                 const responseClone = response.clone()
-                console.log("response clone: ", responseClone)
                 caches.open('api-cache').then(async cache => {
                     const match = await cache.match(responseClone.url)
                     if (match) {

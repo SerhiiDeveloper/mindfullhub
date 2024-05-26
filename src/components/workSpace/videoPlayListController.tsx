@@ -9,11 +9,9 @@ import { useWorkSpaceStore } from "../../store/workSpaceStore";
 export const VideoPlayListController = () => {
   const bgVideoListState = useWorkSpaceVideoStore((state) => state.bgVideoList);
   const isOffline = useWorkSpaceStore((state) => state.isOffline);
-  console.log("isOffline: ", isOffline)
   const bgVideoList = useMemo(() => {
     if (isOffline) return bgVideoListState.map((group) => {
       const video = group.video.filter((video) => video.isCached === true);
-      console.log(video)
       if (video.length === 0) return;
       return { ...group, video };
     });
@@ -36,9 +34,6 @@ export const VideoPlayListController = () => {
   const deleteFromCacheById = useWorkSpaceVideoStore(
     (state) => state.deleteFromCacheById
   );
-  // const updateVideoCached = useWorkSpaceVideoStore(
-  //   (state) => state.updateVideoCached
-  // );
 
   useEffect(() => {
     if (!bgVideoList || bgVideoList.length === 0) {
@@ -64,13 +59,9 @@ export const VideoPlayListController = () => {
   };
 
   const handleVideoCacheClick =
-    (id: string, src: string, cached: boolean | undefined) => (event: MouseEvent) => {
+    (id: string, cached: boolean | undefined) => (event: MouseEvent) => {
       if (cached) {
       event.stopPropagation();
-      // if (!cached && activeVideoId !== id) {
-      //   setNextActiveVideo(id)
-        // return updateVideoCached(src, id);
-      // }
       return deleteFromCacheById(id);
       }
     };
@@ -135,7 +126,6 @@ export const VideoPlayListController = () => {
                 }
                 onClick={handleVideoCacheClick(
                   video._id,
-                  video.src,
                   video.isCached
                 )}
               />

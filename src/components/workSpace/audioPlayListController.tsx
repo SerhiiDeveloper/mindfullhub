@@ -46,7 +46,7 @@ export const AudioPlayListController = () => {
   };
 
   const handleAudioCacheClick =
-  (id: string, src: string, cached: boolean | undefined) => (event: MouseEvent) => {
+  (id: string, cached: boolean | undefined) => (event: MouseEvent) => {
     if (cached) {
       event.stopPropagation()
       return deleteFromCacheById(id);
@@ -106,7 +106,6 @@ export const AudioPlayListController = () => {
                 }
                 onClick={handleAudioCacheClick(
                   audio._id,
-                  audio.src,
                   audio.isCached
                 )}
               />

@@ -74,7 +74,6 @@ export const useWorkSpaceLocalStore = create<IWorkSpaceLocalStore>()(persist((se
                 videoList[index].src = URL.createObjectURL(item)
             })
 
-            console.log("videoList in get: ", videoList)
             set(() => ({ videoList }))
         }
     },

@@ -1,7 +1,7 @@
 import { Popover } from "../popover";
 import { SvgController } from "../svgController";
 import DotsSvg from "../../assets/svg/dots.svg";
-import { TaskType, useTasksStore } from "../../store/tasksStore";
+import { useTasksStore } from "../../store/tasksStore";
 import { useMemo } from "react";
 
 export const TaskCompletedRange = () => {

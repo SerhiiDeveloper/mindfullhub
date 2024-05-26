@@ -1,16 +1,15 @@
 import { FC, useMemo } from "react";
-import { BGVideoDataType, UpdateCachedType } from "../../store/workSpaceVideoStore";
+import { BGVideoDataType } from "../../store/workSpaceVideoStore";
 import { useVideoController } from "./useVideoController";
 import DefaultPoster from "../../assets/default_poster.webp";
 
 type BG_VideoPropsType = {
   videoData: BGVideoDataType
-  onLoadedCallback: UpdateCachedType
 }
 
-export const BG_Video: FC<BG_VideoPropsType> = ({videoData, onLoadedCallback}) => {
+export const BG_Video: FC<BG_VideoPropsType> = ({videoData}) => {
   const memoVideoData = useMemo(() => videoData, [videoData._id, videoData.poster]);
-  const { videoRef, handleVideoLoaded } = useVideoController(memoVideoData, onLoadedCallback);
+  const { videoRef, handleVideoLoaded } = useVideoController(memoVideoData);
 
   return (
     <div className="flex items-center justify-center h-full w-full z-0 absolute">

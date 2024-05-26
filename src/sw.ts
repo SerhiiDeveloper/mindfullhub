@@ -8,34 +8,11 @@ import { CacheableResponsePlugin } from "workbox-cacheable-response"
 
 
 declare let self: ServiceWorkerGlobalScope
-declare type ExtendableEvent = any
 declare global {
     interface ServiceWorkerGlobalScope {
         location: string
     }
 }
-
-// self.addEventListener('fetch', (event: FetchEvent) => {
-//     console.log("fetch url: ", event.request.url)
-//     if (event.request.url.includes("/api/")) {
-//         event.respondWith(
-//             (async function () {
-//                 const cache = await caches.open("API_CACHE");
-//                 console.log("Is cache exit: ", cache);
-//                 const cachedResponse = await cache.match(event.request);
-//                 console.log("GET from cache: ", cachedResponse)
-//                 if (cachedResponse) return cachedResponse;
-//                 const networkResponse = await fetch(event.request)
-//                 cache.put(event.request, networkResponse.clone());
-//                 // event.waitUntil(cache.put(event.request, networkResponse.clone()));
-//                 console.log("GET from fetch: ", networkResponse)
-//                 return networkResponse;
-
-//             })(),
-//         );
-//     }
-//     return;
-// })
 
 self.addEventListener('message', (event) => {
     console.log(event.data)
@@ -87,7 +64,6 @@ self.addEventListener('message', (event) => {
                     caches.open("local-video-cache").then(cache => {
                         cache.keys().then(keys => {
                             console.log("local-video-cache keys: ", keys);
-                            // cache.delete(keys[0])
                         })
                     }),
                 ])
@@ -100,11 +76,13 @@ self.addEventListener('message', (event) => {
 self.skipWaiting();
 clientsClaim();
 
-precacheAndRoute([{
-    "url": "index.html",
-    "revision": new Date().toString()
-}], {});
-// precacheAndRoute(self.__WB_MANIFEST)
+precacheAndRoute([...self.__WB_MANIFEST,
+//      {
+//     "url": "index.html",
+//     "revision": new Date().toString()
+// }
+], {});
+
 cleanupOutdatedCaches();
 registerRoute(new NavigationRoute(createHandlerBoundToURL("index.html"), {
     allowlist: [/^\/$/]
@@ -153,7 +131,7 @@ registerRoute(
 const AudioCacheableResponse = new CacheableResponsePlugin({
     statuses: [0, 200, 300]
 })
-AudioCacheableResponse.cacheWillUpdate =  async ({ request, response, event }) => {
+AudioCacheableResponse.cacheWillUpdate =  async ({ request, response }) => {
     if (response) {
         self.clients.matchAll().then(clients => {
             clients.forEach(client => {
@@ -181,7 +159,7 @@ registerRoute(
 const VideoCacheableResponse = new CacheableResponsePlugin({
     statuses: [0, 200, 300]
 })
-VideoCacheableResponse.cacheWillUpdate =  async ({ request, response, event }) => {
+VideoCacheableResponse.cacheWillUpdate =  async ({ request, response }) => {
     if (response) {
         self.clients.matchAll().then(clients => {
             clients.forEach(client => {

@@ -19,7 +19,6 @@ export const WorkSpace = () => {
   const updateAudioCachedById = useWorkSpaceAudioStore(state => state.updateAudioCachedById)
   
   const cachedListener = (event: MessageEvent) => {
-    console.log(event.data);
     switch (event.data.action) {
       case "cacheAPIVideoData":
         updateVideoCached(event.data.url);

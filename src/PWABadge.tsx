@@ -88,7 +88,6 @@ function registerPeriodicSync(
         "cache-control": "no-cache",
       },
     });
-    console.log("cache fetch: ", resp);
 
     if (resp?.status === 200) await r.update();
   }, period);

@@ -17,7 +17,6 @@ export const useWorkSpaceStore = create<IWorkSpaceStore>()(persist((set) => ({
     setIsLocal: (isLocal) => set(() => ({ isLocal })),
     isOffline: false,
     setIsOffline: (isOffline) => {
-        console.log("is Offline in store: ", isOffline)
         set(() => ({ isOffline }))
     }
 }), { name: "workSpace" }))

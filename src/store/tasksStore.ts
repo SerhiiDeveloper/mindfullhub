@@ -23,7 +23,7 @@ interface ITasksStore {
     setFilterByChecked: (value: null | boolean) => void
 }
 
-export const useTasksStore = create<ITasksStore>()(persist((set, get) => ({
+export const useTasksStore = create<ITasksStore>()(persist((set) => ({
     isTasksShow: false,
     setIsTasksShow: () => set((state) => ({ isTasksShow: !state.isTasksShow })),
     tasksList: [],

@@ -4,7 +4,7 @@ import NoSoundSVG from "../../assets/svg/no_sound.svg";
 import HeadRightSVG from "../../assets/svg/head_right.svg";
 import HeadLeftSVG from "../../assets/svg/head_left.svg";
 import LoopSVG from "../../assets/svg/loop.svg";
-import { AudioType, useAudioController } from "./useAudioController";
+import { useAudioController } from "./useAudioController";
 import { useWorkSpaceAudioStore } from "../../store/workSpaceAudioStore";
 import { useMemo } from "react";
 
@@ -27,9 +27,6 @@ export const AudioController = () => {
       },
     [activeAudioGroupId, audioPlayList.length]
   );
-  const updateAudioCachedById = useWorkSpaceAudioStore(
-    (state) => state.updateAudioCachedById
-  );
   const {
     currentTrack,
     volume,
@@ -48,10 +45,6 @@ export const AudioController = () => {
     setActiveAudioId
   );
 
-  const handleOnLoaded = (track: AudioType) => () => {
-    // updateAudioCachedById(track._id, track.src);
-  };
-
   if (!currentTrack) return;
   return (
     <div className="p-4 px-6">
@@ -59,7 +52,6 @@ export const AudioController = () => {
         onEnded={handleAudioEnded}
         ref={audioRef}
         loop={isLoop}
-        onLoadedData={handleOnLoaded(currentTrack)}
       >
         <source src={currentTrack.src} type="audio/mp3" />
         Your browser does not support the audio element.

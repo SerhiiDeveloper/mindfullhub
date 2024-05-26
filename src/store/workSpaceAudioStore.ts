@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 import { callFetchAndCache } from "./utils/callFetchAndCache";
 import { addIsCachedToAudioList } from "./utils/addIsCachedToAudioList";
 import { UpdateCachedType } from "./workSpaceVideoStore";
-import { checkIsCachedBySrc } from "./utils/checkIsCachedBySrc";
 
 export type BGAudioType = {
     src: string;
@@ -31,7 +30,7 @@ interface IWorkSpaceAudioStore {
 
 export const useWorkSpaceAudioStore = create<IWorkSpaceAudioStore>()(persist((set, get) => ({
     getAudioListFromApi: async () => {
-        let audioList = await callFetchAndCache<BGAudioGroupType[]>("http://localhost:8080/api/audio-list")
+        let audioList = await callFetchAndCache<BGAudioGroupType[]>("/api/audio-list")
         audioList = await addIsCachedToAudioList('music-api-cache', audioList)
 
         const activeAudioId = get().activeAudioId

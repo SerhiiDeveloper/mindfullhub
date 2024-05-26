@@ -10,7 +10,6 @@ const BG_VideoWrapper = () => {
     const bgVideoList = useWorkSpaceVideoStore((state) => state.bgVideoList);
     const activeVideoGroupId = useWorkSpaceVideoStore(state => state.activeVideoGroupId)
     const activeVideoId = useWorkSpaceVideoStore(state => state.activeVideoId)
-    const updateVideoCached = useWorkSpaceVideoStore(state => state.updateVideoCached)
     const isLocal = useWorkSpaceStore(state => state.isLocal)
     const localVideoDataList = useWorkSpaceLocalStore(state => state.videoList)
     const localActiveVideoId = useWorkSpaceLocalStore(state => state.activeVideoId)
@@ -27,12 +26,11 @@ const BG_VideoWrapper = () => {
     )
     const localVideoData = useMemo(() => localVideoDataList.find(video => video._id === localActiveVideoId) || defaultVideoObject, [localActiveVideoId])
 
-    const onLoadedCallback = (isLocal: boolean) => !isLocal ? updateVideoCached : () => {}
     if (isLocal) return (
-        <BG_Video videoData={localVideoData} onLoadedCallback={onLoadedCallback(isLocal)} />
+        <BG_Video videoData={localVideoData} />
     )
     return (
-        <BG_Video videoData={videoData} onLoadedCallback={onLoadedCallback(isLocal)} />
+        <BG_Video videoData={videoData} />
     )
 }
 
