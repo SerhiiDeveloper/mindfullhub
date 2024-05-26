@@ -1,7 +1,7 @@
 import express from "express";
 import http from "http"
-const https = require('https');
-const fs = require('fs');
+// const https = require('https');
+// const fs = require('fs');
 
 import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
@@ -46,7 +46,7 @@ mongoose.connection.on("error", (error: Error) => {
 
 app.use("/api", router())
 
-app.use("/", express.static(path.join(__dirname, "../..", "dist")))
+app.use("/", express.static(path.join(__dirname, "public/dist")))
 app.use((req, res) => {
     res.redirect("/")
 })
