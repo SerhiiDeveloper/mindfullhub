@@ -1,0 +1,39 @@
+.checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  font-size: 1rem;
+  padding: 0.2rem;
+  border: 0.1rem solid rgb(107, 114, 128);
+  border-radius: 0.3rem;
+  cursor: pointer;
+  &::before {
+    content: "";
+    width: 0.75rem;
+    height: 0.75rem;
+    clip-path: polygon(
+      20% 0%,
+      0% 20%,
+      30% 50%,
+      0% 80%,
+      20% 100%,
+      50% 70%,
+      80% 100%,
+      100% 80%,
+      70% 50%,
+      100% 20%,
+      80% 0%,
+      50% 30%
+    );
+    transform: scale(0);
+    background-color: rgb(107, 114, 128);
+  }
+  &:checked::before {
+    transform: scale(1);
+  }
+  &:hover::before {
+    background-color: rgb(174, 188, 212);
+  }
+}
