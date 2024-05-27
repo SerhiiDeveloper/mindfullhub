@@ -46,7 +46,7 @@ mongoose.connection.on("error", (error: Error) => {
 
 app.use("/api", router())
 
-app.use("/", express.static(path.join(__dirname, "public/dist")))
+app.use("/", express.static(path.join(__dirname, "public")))
 app.use((req, res) => {
     res.redirect("/")
 })

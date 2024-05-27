@@ -25,15 +25,16 @@ jobs:
         run: |
           cd server
           npm install
+          npm run build
 
       - name: npm install, build, and test
         run: |
           npm install
           npm run build 
-          cp -r dist server/public
+          cp -r dist server/dist/public
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./server/* -r
+        run: zip release.zip ./server/dist/* -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3

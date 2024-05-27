@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "nodemon",
-    "build": "mkdir dist | cp -a ../dist/. dist/"
+    "start": "pm2 start ecosystem.config.js",
+    "stop": "pm2 stop mindfullhub-app",
+    "build": "tsc",
+    "dev": "nodemon",
+    "dev-build": "cd ../ && npm run build && cp -r dist server/src/public"
   },
   "author": "Serhii Bilous",
   "license": "ISC",
