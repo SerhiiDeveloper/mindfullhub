@@ -14,6 +14,8 @@ server/.env_production
 server/public
 server/dist
 server/src/public
+server/package-lock.json
+package-lock.json
 dist
 dist-ssr
 *.local
