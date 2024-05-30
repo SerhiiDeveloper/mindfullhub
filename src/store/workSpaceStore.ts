@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+export const BaseURL = "http://13.50.235.0/api/"
+
 interface IWorkSpaceStore {
     isWidgetShow: boolean;
     setIsWidgetShow: () => void

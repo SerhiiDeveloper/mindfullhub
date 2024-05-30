@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState, useMemo } from "react"
+import { useWorkSpaceAudioStore } from "../../store/workSpaceAudioStore"
 
 export type AudioType = {
     src: string
@@ -14,12 +15,17 @@ export const useAudioController = (playList: PlayListType, activeAudioId: string
     const [isLoop, setIsLoop] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
     const activeTrack = useMemo(() => playList.find(audio => audio._id === activeAudioId), [activeAudioId, playList.length])
+    const deleteFromCacheById = useWorkSpaceAudioStore(state => state.deleteFromCacheById)
 
     useEffect(() => {
         const handleUserInteraction = () => {
             if (!audioRef.current) return;
             audioRef.current.load();
-            audioRef.current.play().catch((error) => console.error(error));
+            audioRef.current.play().catch((error) => {
+                console.error(error)
+                deleteFromCacheById(activeAudioId)
+                audioRef.current?.pause();
+            });
             setIsSound(true)
             document.removeEventListener("click", handleUserInteraction);
         };
@@ -35,8 +41,12 @@ export const useAudioController = (playList: PlayListType, activeAudioId: string
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.src = activeTrack.src || "";
-            audioRef.current.load();
-            audioRef.current.play();
+            audioRef.current.load()
+            audioRef.current.play().catch(error => {
+                console.error(error);
+                deleteFromCacheById(activeAudioId)
+                audioRef.current?.pause();
+            })
         }
     }, [activeAudioId]);
 
