@@ -10,10 +10,10 @@ lerna-debug.log*
 node_modules
 server/node_modules
 server/.env
-server/.env_production
-server/public
-server/dist
+server/.env.production
 server/src/public
+server/build
+server/public
 server/package-lock.json
 package-lock.json
 dist

@@ -16,7 +16,7 @@ export const callFetchAndCache: CallFetchAndCacheType = async (url) => {
     let listResponse = await fetch(request)
         .then(async (response) => {
             const isCacheble = cacheable.isResponseCacheable(response)
-            if (isCacheble) {
+            if (isCacheble && caches) {
                 const responseClone = response.clone()
                 caches.open('api-cache').then(async cache => {
                     const match = await cache.match(responseClone.url)
@@ -32,7 +32,7 @@ export const callFetchAndCache: CallFetchAndCacheType = async (url) => {
         .catch(error => {
             console.error("Handle error: ", error)
         })
-    if (!listResponse) {
+    if (!listResponse && caches) {
         const cache = await caches.open('api-cache')
         const match = await cache.match(request.url)
         listResponse = !match ? [] : await match.json()

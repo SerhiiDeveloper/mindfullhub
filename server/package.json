@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start ecosystem.config.js",
-    "stop": "pm2 stop mindfullhub-app",
+    "start": "node build/index.js",
+    "start-pm2": "pm2 start ecosystem.config.js",
+    "stop-pm2": "pm2 stop mindfullhub-app",
+    "pre-build": "cd ../ && npm run build && cp -r dist server/public",
     "build": "tsc",
-    "dev": "nodemon",
-    "dev-build": "cd ../ && npm run build && cp -r dist server/src/public"
+    "dev": "nodemon"
   },
   "author": "Serhii Bilous",
   "license": "ISC",

@@ -46,15 +46,17 @@ export const useWorkSpaceLocalStore = create<IWorkSpaceLocalStore>()(persist((se
             src: URL.createObjectURL(file),
             title
         }
-        const cache = await caches.open("local-video-cache")
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const uploadedFile = new Blob([e.target!.result!], { type: file.type });
-            const headers = new Headers({ "Content-Type": "video/mp4", "_id": video._id, "title": btoa(unescape(encodeURIComponent(video.title))), "src": video.src });
-            cache.put(video._id, new Response(uploadedFile, { headers }));
-        };
-        reader.readAsArrayBuffer(file);
-        set(state => ({ videoList: [...state.videoList, video], activeVideoId: video._id }))
+        if (caches) {
+            const cache = await caches.open("local-video-cache")
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const uploadedFile = new Blob([e.target!.result!], { type: file.type });
+                const headers = new Headers({ "Content-Type": "video/mp4", "_id": video._id, "title": btoa(unescape(encodeURIComponent(video.title))), "src": video.src });
+                cache.put(video._id, new Response(uploadedFile, { headers }));
+            };
+            reader.readAsArrayBuffer(file);
+            set(state => ({ videoList: [...state.videoList, video], activeVideoId: video._id }))
+        }
     },
     getVideoListFromCache: async () => {
         if (get().videoList.length) return
@@ -78,15 +80,17 @@ export const useWorkSpaceLocalStore = create<IWorkSpaceLocalStore>()(persist((se
         }
     },
     deleteVideoById: (id) => {
-        caches.open("local-video-cache").then(cache => cache.delete(id))
-        const newActiveVideoId = get().activeVideoId === id ? "" : get().activeVideoId
-        const newVideoList = get().videoList.filter(video => {
-            URL.revokeObjectURL(video.src)
-            return video._id !== id
-        })
-        set(() => ({ videoList: newVideoList, activeVideoId: newActiveVideoId }))
+        if (caches) {
+            caches.open("local-video-cache").then(cache => cache.delete(id))
+            const newActiveVideoId = get().activeVideoId === id ? "" : get().activeVideoId
+            const newVideoList = get().videoList.filter(video => {
+                URL.revokeObjectURL(video.src)
+                return video._id !== id
+            })
+            set(() => ({ videoList: newVideoList, activeVideoId: newActiveVideoId }))
+        }
     }
 }), {
     name: "workSpaceLocalStore",
-    partialize: (state => ({activeVideoId: state.activeVideoId, activeAudioId: state.activeAudioId, activeImageId: state. activeImageId}))
+    partialize: (state => ({ activeVideoId: state.activeVideoId, activeAudioId: state.activeAudioId, activeImageId: state.activeImageId }))
 }));
