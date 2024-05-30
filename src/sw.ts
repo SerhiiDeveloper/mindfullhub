@@ -16,6 +16,7 @@ declare global {
 
 self.addEventListener('message', (event) => {
     console.log(event.data)
+    if (!caches) return;
     switch (event.data.action) {
         case "deleteFromCache":
             caches.open(event.data.cacheName).then(cache => {

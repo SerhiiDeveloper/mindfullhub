@@ -33,9 +33,9 @@ export const WorkSpace = () => {
     }
   }
   useEffect(() => {
-    navigator.serviceWorker.addEventListener("message", cachedListener);
+    navigator?.serviceWorker?.addEventListener("message", cachedListener);
     return () => {
-      navigator.serviceWorker.removeEventListener("message", cachedListener);
+      navigator?.serviceWorker?.removeEventListener("message", cachedListener);
     }
   }, [])
 
