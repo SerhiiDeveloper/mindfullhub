@@ -3,7 +3,8 @@ import { persist } from "zustand/middleware";
 import { callFetchAndCache } from "./utils/callFetchAndCache";
 import { addIsCachedToAudioList } from "./utils/addIsCachedToAudioList";
 import { UpdateCachedType } from "./workSpaceVideoStore";
-import { BaseURL } from "./workSpaceStore";
+import { BaseURL } from "../const";
+
 
 export type BGAudioType = {
     src: string;

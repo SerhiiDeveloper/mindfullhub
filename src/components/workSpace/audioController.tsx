@@ -5,27 +5,54 @@ import HeadRightSVG from "../../assets/svg/head_right.svg";
 import HeadLeftSVG from "../../assets/svg/head_left.svg";
 import LoopSVG from "../../assets/svg/loop.svg";
 import { useAudioController } from "./useAudioController";
-import { useWorkSpaceAudioStore } from "../../store/workSpaceAudioStore";
-import { useMemo } from "react";
+import { BGAudioType, useWorkSpaceAudioStore } from "../../store/workSpaceAudioStore";
+import { FC, useCallback, useMemo } from "react";
+import { useWorkSpaceLocalStore } from "../../store/workSpaceLocalStore";
 
-export const AudioController = () => {
+type AudioControllerPropsType = {
+  isLocal: boolean;
+};
+
+export const AudioController: FC<AudioControllerPropsType> = ({ isLocal }) => {
   const audioPlayList = useWorkSpaceAudioStore((state) => state.bgAudioList);
+  const localAudioPlayList = useWorkSpaceLocalStore((state) => state.audioList);
   const activeAudioId = useWorkSpaceAudioStore((state) => state.activeAudioId);
+  const localActiveAudioId = useWorkSpaceLocalStore(
+    (state) => state.activeAudioId
+  );
   const activeAudioGroupId = useWorkSpaceAudioStore(
     (state) => state.activeAudioGroupId
   );
   const setActiveAudioId = useWorkSpaceAudioStore(
     (state) => state.setActiveAudioId
   );
-  const memoAudioGroup = useMemo(
+  const setLocalActiveAudioId = useWorkSpaceLocalStore(
+    (state) => state.setActiveAudioId
+  );
+  const deleteFromAPICache = useWorkSpaceAudioStore(state => state.deleteFromCacheById)
+  const deleteFromLocalCache = useWorkSpaceLocalStore(state => state.deleteAudioById)
+
+  const setActiveId = useCallback(
+    isLocal ? setLocalActiveAudioId : setActiveAudioId,
+    [isLocal]
+  );
+  const deleteFromCacheById = useCallback(
+    isLocal ? deleteFromLocalCache : deleteFromAPICache,
+    [isLocal]
+  );
+  const memoAudioGroup = useMemo<BGAudioType[]>(
     () =>
-      audioPlayList.find((item) => item._id === activeAudioGroupId) || {
-        audioPlayList: [],
-        _id: "",
-        icon: "",
-        title: "",
-      },
-    [activeAudioGroupId, audioPlayList.length]
+      isLocal
+        ? localAudioPlayList
+        : audioPlayList.find((item) => item._id === activeAudioGroupId)
+            ?.audioPlayList || [],
+    [
+      activeAudioGroupId,
+      audioPlayList.length,
+      isLocal,
+      localAudioPlayList.length,
+      localActiveAudioId,
+    ]
   );
   const {
     currentTrack,
@@ -39,20 +66,12 @@ export const AudioController = () => {
     handleAudioEnded,
     handleIsLoopChange,
     isLoop,
-  } = useAudioController(
-    memoAudioGroup.audioPlayList,
-    activeAudioId,
-    setActiveAudioId
-  );
+  } = useAudioController(memoAudioGroup, isLocal ? localActiveAudioId : activeAudioId, setActiveId, deleteFromCacheById);
 
   if (!currentTrack) return;
   return (
     <div className="p-4 px-6">
-      <audio
-        onEnded={handleAudioEnded}
-        ref={audioRef}
-        loop={isLoop}
-      >
+      <audio onEnded={handleAudioEnded} ref={audioRef} loop={isLoop}>
         <source src={currentTrack.src} type="audio/mp3" />
         Your browser does not support the audio element.
       </audio>

@@ -1,8 +1,5 @@
 import express from "express";
 import http from "http"
-// const https = require('https');
-// const fs = require('fs');
-
 import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
 import compression from "compression";
@@ -10,6 +7,10 @@ import cors from "cors"
 import dotenv from 'dotenv'
 import mongoose from "mongoose";
 import path from "path";
+
+// for development
+// import ngrok from "@ngrok/ngrok"
+// -------------
 
 import router from "./router";
 
@@ -25,19 +26,17 @@ app.use(compression())
 app.use(cookieParser())
 app.use(bodyParser.json())
 
-// const privateKey = fs.readFileSync('server.key', 'utf8');
-// const certificate = fs.readFileSync('server.cert', 'utf8');
-// const credentials = { key: privateKey, cert: certificate };
 const server = http.createServer(app)
-// const httpsServer = https.createServer(credentials, app);
 
 const PORT = process.env.PORT || 8080
 server.listen(PORT, () => {
     console.log("Server running on http://localhost:" + PORT)
 })
-// httpsServer.listen(8080, () => {
-//     console.log("Server running on https://localhost:8080/")
-// })
+// for development
+// ngrok.connect({ addr: PORT, authtoken_from_env: true })
+// 	.then(listener => console.log(`Ingress established at: ${listener.url()}`));
+// -------------
+
 
 mongoose.Promise = Promise;
 mongoose.connect(process.env.MONGODB_URL)

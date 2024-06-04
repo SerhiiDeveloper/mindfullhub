@@ -1,5 +1,4 @@
 import { ChangeEvent, useEffect, useRef, useState, useMemo } from "react"
-import { useWorkSpaceAudioStore } from "../../store/workSpaceAudioStore"
 
 export type AudioType = {
     src: string
@@ -9,13 +8,12 @@ export type AudioType = {
 
 export type PlayListType = AudioType[]
 
-export const useAudioController = (playList: PlayListType, activeAudioId: string, setActiveAudioId: (id: string) => void) => {
+export const useAudioController = (playList: PlayListType, activeAudioId: string, setActiveAudioId: (id: string) => void, deleteFromCacheById: (id: string) => void) => {
     const [volume, setVolume] = useState(70);
     const [isSound, setIsSound] = useState(false);
     const [isLoop, setIsLoop] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
     const activeTrack = useMemo(() => playList.find(audio => audio._id === activeAudioId), [activeAudioId, playList.length])
-    const deleteFromCacheById = useWorkSpaceAudioStore(state => state.deleteFromCacheById)
 
     useEffect(() => {
         const handleUserInteraction = () => {

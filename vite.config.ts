@@ -21,7 +21,7 @@ export default defineConfig({
       short_name: 'mindfull',
       description: 'Прогресивний веб-додаток для медитації та концентрації, надає можливість налаштування робочого місця та зручного управління задачами в режимі офлайн та онлайн',
       theme_color: '#ffffff',
-      start_url: "",
+      start_url: "/index.html",
       lang: 'uk',
       display_override: ['standalone'],
       icons: [

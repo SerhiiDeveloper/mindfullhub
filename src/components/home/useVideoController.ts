@@ -1,18 +1,17 @@
 import { useEffect, useRef } from "react";
-import { BGVideoDataType, useWorkSpaceVideoStore } from "../../store/workSpaceVideoStore";
+import { BGVideoDataType } from "../../store/workSpaceVideoStore";
 
-export const useVideoController = (videoData: BGVideoDataType) => {
+export const useVideoController = (videoData: BGVideoDataType, deleteFromCache: (id: string) => void) => {
     const isMounted = useRef(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const handleUserInteraction = useRef<() => void>(null!);
-    const deleteFromCacheById = useWorkSpaceVideoStore(state => state.deleteFromCacheById)
 
     useEffect(() => {
         handleUserInteraction.current = () => {
             if (!videoRef.current) return;
             videoRef.current.play().catch((error) => {
                 console.error(error)
-                deleteFromCacheById(videoData._id)
+                deleteFromCache(videoData._id)
                 videoRef.current?.pause()
             });
             document.removeEventListener("click", handleUserInteraction.current);
@@ -35,7 +34,7 @@ export const useVideoController = (videoData: BGVideoDataType) => {
         videoRef.current.load();
         setTimeout(() => videoRef.current?.play().catch((error) => {
             console.error(error)
-            deleteFromCacheById(videoData._id)
+            deleteFromCache(videoData._id)
             videoRef.current?.pause()
     }), 1500);
     }, [videoData])
