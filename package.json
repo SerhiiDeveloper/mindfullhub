@@ -14,6 +14,7 @@
     "@dnd-kit/core": "^6.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-toastify": "^10.0.5",
     "sharp": "^0.33.3",
     "sharp-ico": "^0.1.5",
     "zustand": "^4.5.2"

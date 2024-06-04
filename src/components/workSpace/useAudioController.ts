@@ -8,7 +8,7 @@ export type AudioType = {
 
 export type PlayListType = AudioType[]
 
-export const useAudioController = (playList: PlayListType, activeAudioId: string, setActiveAudioId: (id: string) => void) => {
+export const useAudioController = (playList: PlayListType, activeAudioId: string, setActiveAudioId: (id: string) => void, deleteFromCacheById: (id: string) => void) => {
     const [volume, setVolume] = useState(70);
     const [isSound, setIsSound] = useState(false);
     const [isLoop, setIsLoop] = useState(false);
@@ -19,7 +19,11 @@ export const useAudioController = (playList: PlayListType, activeAudioId: string
         const handleUserInteraction = () => {
             if (!audioRef.current) return;
             audioRef.current.load();
-            audioRef.current.play().catch((error) => console.error(error));
+            audioRef.current.play().catch((error) => {
+                console.error(error)
+                deleteFromCacheById(activeAudioId)
+                audioRef.current?.pause();
+            });
             setIsSound(true)
             document.removeEventListener("click", handleUserInteraction);
         };
@@ -35,8 +39,12 @@ export const useAudioController = (playList: PlayListType, activeAudioId: string
         if (audioRef.current) {
             audioRef.current.pause();
             audioRef.current.src = activeTrack.src || "";
-            audioRef.current.load();
-            audioRef.current.play();
+            audioRef.current.load()
+            audioRef.current.play().catch(error => {
+                console.error(error);
+                deleteFromCacheById(activeAudioId)
+                audioRef.current?.pause();
+            })
         }
     }, [activeAudioId]);
 

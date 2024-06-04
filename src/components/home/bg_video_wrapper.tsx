@@ -24,13 +24,10 @@ const BG_VideoWrapper = () => {
             return defaultVideoObject
         }, [activeVideoGroupId, activeVideoId, bgVideoList.length]
     )
-    const localVideoData = useMemo(() => localVideoDataList.find(video => video._id === localActiveVideoId) || defaultVideoObject, [localActiveVideoId])
+    const localVideoData = useMemo(() => localVideoDataList.find(video => video._id === localActiveVideoId) || defaultVideoObject, [localActiveVideoId, localVideoDataList.length])
 
-    if (isLocal) return (
-        <BG_Video videoData={localVideoData} />
-    )
     return (
-        <BG_Video videoData={videoData} />
+        <BG_Video videoData={isLocal ? localVideoData : videoData} isLocal={isLocal} />
     )
 }
 

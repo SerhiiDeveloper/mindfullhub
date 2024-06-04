@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { callFetchAndCache } from "./utils/callFetchAndCache.ts";
 import { addIsCachedToVideoList } from "./utils/addIsCachedToVideoList.ts"
+import { BaseURL } from "../const.ts";
+
 
 export type BGVideoType = {
     src: string;
@@ -36,7 +38,7 @@ interface IWorkSpaceVideoStore {
 
 export const useWorkSpaceVideoStore = create<IWorkSpaceVideoStore>()(persist((set, get) => ({
     getVideoListFromApi: async () => {
-        let videoList = await callFetchAndCache<BGVideoGroupType[]>("/api/video-list")
+        let videoList = await callFetchAndCache<BGVideoGroupType[]>(BaseURL + "video-list")
         videoList = await addIsCachedToVideoList('video-api-cache', videoList)
 
         const activeVideoId = get().activeVideoId
@@ -76,10 +78,6 @@ export const useWorkSpaceVideoStore = create<IWorkSpaceVideoStore>()(persist((se
         }
     },
     updateVideoCached: async (src) => {
-        // let isCached = true
-        // if (id) {
-        //    isCached = await checkIsCachedBySrc('video-api-cache', src)
-        // }
         const bgVideoList = get().bgVideoList.map(group => {
             const video = group.video.map(item => item.src === src ? { ...item, isCached: true } : item)
             return { ...group, video }

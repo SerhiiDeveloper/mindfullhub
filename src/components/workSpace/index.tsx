@@ -1,14 +1,13 @@
 import { WidgetTypeEnum } from "../../store/activeWidgetStore";
 import { WidgetControlPanel } from "../widgetDnD/widgetControlPanel";
 import { WidgetDraggableHOC } from "../widgetDnD/widgetDraggableHOC";
-
-import { AudioController } from "./audioController";
 import { PlayListController } from "./playListControllers";
 import { DataSourceTabMenu } from "./dataSourceTabMenu";
 import { useWorkSpaceStore } from "../../store/workSpaceStore";
 import { useEffect } from "react";
 import { useWorkSpaceVideoStore } from "../../store/workSpaceVideoStore";
 import { useWorkSpaceAudioStore } from "../../store/workSpaceAudioStore";
+import checkStorageEstimate from "../../store/utils/checkStorageEstimate";
 
 export const WorkSpace = () => {
   const setIsWidgetShow = useWorkSpaceStore((state) => state.setIsWidgetShow);
@@ -19,6 +18,7 @@ export const WorkSpace = () => {
   const updateAudioCachedById = useWorkSpaceAudioStore(state => state.updateAudioCachedById)
   
   const cachedListener = (event: MessageEvent) => {
+    checkStorageEstimate();
     switch (event.data.action) {
       case "cacheAPIVideoData":
         updateVideoCached(event.data.url);
@@ -52,7 +52,6 @@ export const WorkSpace = () => {
         />
         <DataSourceTabMenu />
         <PlayListController/>
-        <AudioController />
       </div>
     </WidgetDraggableHOC>
   );

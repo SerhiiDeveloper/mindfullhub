@@ -26,9 +26,9 @@ export const BreathWidget = () => {
     }, 5000);
   };
 
-  if (!isBreathShow) return;
+  // if (!isBreathShow) return;
   const BreathModal = (
-    <div className="w-screen h-screen bg-white absolute left-0 top-0 z-50 flex justify-center items-center">
+    <div className={"w-screen h-screen bg-white absolute left-0 top-0 z-50 flex justify-center items-center " + (isBreathShow ? "" : "hidden")}>
       <SvgController
         src={MinusSVG}
         alt="Згорнути"

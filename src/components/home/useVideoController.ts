@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { BGVideoDataType } from "../../store/workSpaceVideoStore";
 
-export const useVideoController = (videoData: BGVideoDataType) => {
+export const useVideoController = (videoData: BGVideoDataType, deleteFromCache: (id: string) => void) => {
     const isMounted = useRef(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const handleUserInteraction = useRef<() => void>(null!);
@@ -9,7 +9,11 @@ export const useVideoController = (videoData: BGVideoDataType) => {
     useEffect(() => {
         handleUserInteraction.current = () => {
             if (!videoRef.current) return;
-            videoRef.current.play().catch((error) => console.error(error));
+            videoRef.current.play().catch((error) => {
+                console.error(error)
+                deleteFromCache(videoData._id)
+                videoRef.current?.pause()
+            });
             document.removeEventListener("click", handleUserInteraction.current);
         };
 
@@ -28,10 +32,15 @@ export const useVideoController = (videoData: BGVideoDataType) => {
         }
         videoRef.current.src = videoData.src;
         videoRef.current.load();
-        setTimeout(() => videoRef.current?.play().catch((error) => console.error(error)), 1500);
+        setTimeout(() => videoRef.current?.play().catch((error) => {
+            console.error(error)
+            deleteFromCache(videoData._id)
+            videoRef.current?.pause()
+    }), 1500);
     }, [videoData])
 
     const handleVideoLoaded = () => {
+        console.log("handleVideoLoaded")
         if (isMounted.current) return;
         document.addEventListener("click", handleUserInteraction.current);
         isMounted.current = true;

@@ -1,13 +1,13 @@
-import "./PWABadge.css";
-
+import { useEffect } from "react";
 import { useRegisterSW } from "virtual:pwa-register/react";
-// import "./sw.ts";
+import { ToastContent, toast } from "react-toastify";
 
 function PWABadge() {
   // check for updates every hour
-  const period = 60 * 60 * 1000
+  const period = 60 * 60 * 1000;
 
   const {
+    // offlineReady: [offlineReady],
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
@@ -25,45 +25,43 @@ function PWABadge() {
       }
     },
   });
-  function close() {
+  const close = (callback: () => void) => () => {
     setOfflineReady(false);
     setNeedRefresh(false);
-  }
-  return (
-    <div
-      className="PWABadge-container"
-      role="alert"
-      aria-labelledby="toast-message"
-    >
-      {(offlineReady || needRefresh) && (
-        <div className="PWABadge-toast">
-          <div className="PWABadge-message">
-            {offlineReady ? (
-              <span id="toast-message">Додаток готовий до роботи в офлайн</span>
-            ) : (
-              <span id="toast-message">
-                Доступні нові дані, натисніть кнопку "Перезавантажити", щоб
-                оновити.
-              </span>
-            )}
-          </div>
-          <div className="PWABadge-buttons">
-            {needRefresh && (
-              <button
-                className="PWABadge-toast-button"
-                onClick={() => updateServiceWorker(true)}
-              >
-                Перезавантажити
-              </button>
-            )}
-            <button className="PWABadge-toast-button" onClick={() => close()}>
-              Закрити
-            </button>
-          </div>
-        </div>
-      )}
+    callback;
+  };
+
+  const reload: ToastContent = ({ closeToast }) => (
+    <div>
+      Доступні нові дані.
+      <div className="flex flex-row justify-between items-center mt-1">
+        <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-full"
+          onClick={() => {
+            updateServiceWorker(true);
+            closeToast();
+          }}
+        >
+          Перезавантажити
+        </button>
+        <button 
+        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded-full"
+        onClick={close(closeToast)}>Закрити</button>
+      </div>
     </div>
   );
+
+  useEffect(() => {
+    if (offlineReady) {
+      toast.info("Додаток готовий до роботи в офлайн");
+    }
+    if (needRefresh) {
+      toast.warning(reload, {
+        autoClose: false,
+      });
+    }
+  }, [offlineReady]);
+  return null;
 }
 
 export default PWABadge;

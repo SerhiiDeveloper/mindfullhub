@@ -1,15 +1,19 @@
 import { FC, useMemo } from "react";
-import { BGVideoDataType } from "../../store/workSpaceVideoStore";
+import { BGVideoDataType, useWorkSpaceVideoStore } from "../../store/workSpaceVideoStore";
 import { useVideoController } from "./useVideoController";
 import DefaultPoster from "../../assets/default_poster.webp";
+import { useWorkSpaceLocalStore } from "../../store/workSpaceLocalStore";
 
 type BG_VideoPropsType = {
   videoData: BGVideoDataType
+  isLocal: boolean
 }
 
-export const BG_Video: FC<BG_VideoPropsType> = ({videoData}) => {
+export const BG_Video: FC<BG_VideoPropsType> = ({videoData, isLocal}) => {
+  const deleteFromCacheById = useWorkSpaceVideoStore(state => state.deleteFromCacheById)
+  const deleteFromLocalCache = useWorkSpaceLocalStore(state => state.deleteVideoById)
   const memoVideoData = useMemo(() => videoData, [videoData._id, videoData.poster]);
-  const { videoRef, handleVideoLoaded } = useVideoController(memoVideoData);
+  const { videoRef, handleVideoLoaded } = useVideoController(memoVideoData, isLocal ? deleteFromLocalCache : deleteFromCacheById);
 
   return (
     <div className="flex items-center justify-center h-full w-full z-0 absolute">

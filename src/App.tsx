@@ -3,6 +3,8 @@ import { HomePage } from "./pages/home";
 import PWABadge from "./PWABadge";
 import OfflineSVG from "./assets/svg/offline.svg";
 import { useWorkSpaceStore } from "./store/workSpaceStore";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const setIsOffline = useWorkSpaceStore((state) => state.setIsOffline);
@@ -27,13 +29,31 @@ function App() {
 
   return (
     <>
-      {isOffline && (
-        <div className="p-1 border-2 shrink-0 rounded-full border-red-500 w-12 h-12 fixed top-1 right-1 z-50 bg-red-400">
-          <img src={OfflineSVG} alt="Веб застосунок офлайн" />
-        </div>
-      )}
+      {/* {isOffline && ( */}
+      <div
+        className={
+          "p-1 border-2 shrink-0 rounded-full border-red-500 w-12 h-12 fixed top-1 right-1 z-50 bg-red-400 " +
+          (isOffline ? "" : "hidden")
+        }
+      >
+        <img src={OfflineSVG} alt="Веб застосунок офлайн" />
+      </div>
+      {/* )} */}
       <PWABadge />
       <HomePage />
+      <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+      // transition="Bounce"
+      />
     </>
   );
 }

@@ -6,7 +6,6 @@ import { ExpirationPlugin } from "workbox-expiration"
 import { CacheableResponsePlugin } from "workbox-cacheable-response"
 
 
-
 declare let self: ServiceWorkerGlobalScope
 declare global {
     interface ServiceWorkerGlobalScope {
@@ -21,54 +20,19 @@ self.addEventListener('message', (event) => {
         case "deleteFromCache":
             caches.open(event.data.cacheName).then(cache => {
                 cache.delete(event.data.url)
+                self.clients.matchAll().then(clients => {
+                    clients.forEach(client => {
+                        client.postMessage({
+                            action: "deletedFromCache",
+                            cacheName: event.data.cacheName,
+                            url: event.data.url
+                        })
+                    })
+                })
             })
             break;
 
         default:
-            if (event.data.action === 'cacheData') {
-                Promise.all([
-                    caches.open("local-image-cache").then(cache => {
-                        cache.keys().then(keys => {
-                            console.log("local-image-cache keys: ", keys);
-                        })
-                    }),
-                    caches.open("local-audio-cache").then(cache => {
-                        cache.keys().then(keys => {
-                            console.log("audio-cache keys: ", keys);
-                        })
-                    }),
-                    caches.open("api-cache").then(cache => {
-                        cache.keys().then(keys => {
-                            console.log("api-cache keys: ", keys);
-                        })
-                    }),
-                    caches.open("image-api-cache").then(cache => {
-                        cache.keys().then(keys => {
-                            console.log("image-api-cache keys: ", keys);
-                        })
-                    }),
-                    caches.open("icon-api-cache").then(cache => {
-                        cache.keys().then(keys => {
-                            console.log("icon-api-cache keys: ", keys);
-                        })
-                    }),
-                    caches.open("music-api-cache").then(cache => {
-                        cache.keys().then(keys => {
-                            console.log("music-api-cache keys: ", keys);
-                        })
-                    }),
-                    caches.open("video-api-cache").then(cache => {
-                        cache.keys().then(keys => {
-                            console.log("video-api-cache keys: ", keys);
-                        })
-                    }),
-                    caches.open("local-video-cache").then(cache => {
-                        cache.keys().then(keys => {
-                            console.log("local-video-cache keys: ", keys);
-                        })
-                    }),
-                ])
-            }
             break;
     }
 })
@@ -77,12 +41,7 @@ self.addEventListener('message', (event) => {
 self.skipWaiting();
 clientsClaim();
 
-precacheAndRoute([...self.__WB_MANIFEST,
-//      {
-//     "url": "index.html",
-//     "revision": new Date().toString()
-// }
-], {});
+precacheAndRoute([...self.__WB_MANIFEST,], {});
 
 cleanupOutdatedCaches();
 registerRoute(new NavigationRoute(createHandlerBoundToURL("index.html"), {
@@ -132,7 +91,7 @@ registerRoute(
 const AudioCacheableResponse = new CacheableResponsePlugin({
     statuses: [0, 200, 300]
 })
-AudioCacheableResponse.cacheWillUpdate =  async ({ request, response }) => {
+AudioCacheableResponse.cacheWillUpdate = async ({ request, response }) => {
     if (response) {
         self.clients.matchAll().then(clients => {
             clients.forEach(client => {
@@ -160,7 +119,7 @@ registerRoute(
 const VideoCacheableResponse = new CacheableResponsePlugin({
     statuses: [0, 200, 300]
 })
-VideoCacheableResponse.cacheWillUpdate =  async ({ request, response }) => {
+VideoCacheableResponse.cacheWillUpdate = async ({ request, response }) => {
     if (response) {
         self.clients.matchAll().then(clients => {
             clients.forEach(client => {
